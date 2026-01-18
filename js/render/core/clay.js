@@ -78,7 +78,7 @@ export function Clay(gl, canvas) {
    this.controllerOrigin = hand => cg.mTransform(controllerMatrix[hand], [0,-.05,-.08]);
    this.gl = gl;
    this.clayPgm = new clayPgm();
-   this.formMesh = name => formMesh[name];
+   this.formMesh = name => name ? formMesh[name] : formMesh;
    let pgm = null;
    let displacementTextureType = 0;
    let formMesh = {};
@@ -1014,7 +1014,7 @@ let uvToDisk = (u,v,dz) => {
    let y = Math.cos(theta) * v;
    let z = dz;
 
-   return vertexArray([x,y,z], [0,0,dz ? Math.sign(dz) : 1]);
+   return vertexArray([x,y,z], [0,0,dz ? Math.sign(dz) : 1], [x,y,0], [u,v]);
 }
 
 this.createGrid = (nu,nv) =>
@@ -1042,9 +1042,9 @@ let torusXMesh    = permuteCoords(torusZMesh);
 let torusYMesh    = permuteCoords(torusXMesh);
 let sphereMesh    = createMesh(32, 16, uvToSphere);
 let tubeMesh      = buildTubeZMesh(32);
-let diskzMesh     = createMesh(32,  2, uvToDisk);
-let diskxMesh     = permuteCoords(diskzMesh);
-let diskyMesh     = permuteCoords(diskxMesh);
+let diskZMesh     = createMesh(32,  2, uvToDisk);
+let diskXMesh     = permuteCoords(diskZMesh);
+let diskYMesh     = permuteCoords(diskXMesh);
 let coneZMesh      = glueMeshes(createMesh(32, 2, uvToCone),
                                 createMesh(32, 2, uvToDisk, -1));
 let coneXMesh     = permuteCoords(coneZMesh);
@@ -1495,6 +1495,10 @@ function Blobs() {
    setFormMesh('torusX', torusXMesh);
    setFormMesh('torusY', torusYMesh);
    setFormMesh('torusZ', torusZMesh);
+
+   setFormMesh('diskX', diskXMesh);
+   setFormMesh('diskY', diskYMesh);
+   setFormMesh('diskZ', diskZMesh);
 
    let blob = (data, x,y,z) => implicitFunction(data.form,
       data.m,

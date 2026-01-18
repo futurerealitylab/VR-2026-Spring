@@ -1,42 +1,40 @@
-
-/******************************************************************
-
-   This demo shows a variety of objects that can be
-   rendered or textured in the system.
-
-******************************************************************/
+// Create objects with a variety of shapes,
+// apply color and texture to each object, and
+// animate object position, rotation and scale.
 
 export const init = async model => {
+
+   // Assign a texture slot to a source image.
+
    model.txtrSrc(1, '../media/textures/brick.png');
-   let cube = model.add('cube').txtr(1);
-   let tube1 = model.add('tubeX').color(1,0,0);
-   let tube2 = model.add('tubeY').color(0,1,0);
-   let tube3 = model.add('tubeZ').color(0,0,1);
-   let donut = model.add('donut').txtr(1);
-   let ball = model.add('sphere').color(1,1,0);
 
-   let eye = model.add();
-   eye.add('sphere');
-   eye.add('sphere').color(0,0,0);
+   // Various predefined shapes.
 
-   model.move(0,1.5,0).scale(.3).animate(() => {
-      cube.identity().move(Math.sin(model.time),0,0)
-                     .turnX(model.time)
-                     .turnY(model.time)
-                     .turnZ(model.time)
-                     .scale(.4);
-      tube1.identity().move(0, .5,0).scale(.2);
-      tube2.identity().move(0, .0,0).scale(.2);
-      tube3.identity().move(0,-.5,0).scale(.2);
-      ball.identity().move(-.5,Math.abs(Math.sin(3*model.time)),0).scale(.2);
-      donut.identity().move(.5,.5,0).turnY(model.time).scale(.2);
+   let shapes = '\
+coneX coneY coneZ cube cube,rounded cubeXZ \
+pyramidX pyramidY pyramidZ ringX ringY ringZ \
+sphere square octahedron torusX torusY torusZ \
+tubeX tubeY tubeZ diskX diskY diskZ'.split(' ') 
 
-      eye.identity().move(0,1.5,0)
-                    .turnX(Math.sin(2.1*model.time))
-                    .turnY(Math.sin(1.0*model.time)).scale(.3);
-      eye.child(1).identity()
-                  .move(0,0,.6).scale([.6,.6,.5])
-                  .color(0,0,.5 + .5 * Math.sin(3 * model.time));
+   // Create objects, and add colors and textures.
+
+   for (let n = 0 ; n < shapes.length ; n++)
+      model.add(shapes[n]);
+   for (let n = 0 ; n < shapes.length ; n += 2)
+      model.child(n).txtr(1);
+   for (let n = 1 ; n < shapes.length ; n += 2)
+      model.child(n).color(1.23*n%1,2.34*n%1,3.45*n%1);
+
+   // At every animation frame, arrange and rotate objects.
+
+   model.move(0,1.8,0).scale(.4).animate(() => {
+      for (let n = 0 ; n < shapes.length ; n++) {
+         let row = n / 6 >> 0;
+         let col = n % 6;
+         model.child(n).identity().move(col - 2.5, row - 2.5, 0)
+	               .turnX(.5 * model.time)
+	               .turnY(.8 * model.time)
+	               .scale(.25);
+      }
    });
 }
-

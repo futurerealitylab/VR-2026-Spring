@@ -11,8 +11,8 @@ export default () => {
    return {
       enableSceneReloading: true,
       scenes: [ 
-         { name: "example1" , path: "./example1.js" , public: true },
-         { name: "shapes"   , path: "./shapes.js"   , public: true },
+         { name: "shapes" , path: "./shapes.js" , public: true },
+         { name: "joints" , path: "./joints.js" , public: true },
       ]
    };
 }
