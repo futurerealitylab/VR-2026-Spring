@@ -246,8 +246,9 @@ export function stopSpeechRecognition(callback) {
     audioBuffer = [];
 }
 
+window.audioVolume = 0;
+
 function initAudioVolume() {
-   window.audioVolume = 0;
    if (! window.audioContext) {
     console.log("init audio context");
       let onSuccess = stream => {
@@ -594,7 +595,7 @@ async function onSessionStarted(session) {
 
     initGL();
     initHands();
-    initAudioVolume();
+    //initAudioVolume();
     initWebcam();
     await scenesSetup();
     // scene.inputRenderer.useProfileControllerMeshes(session);
