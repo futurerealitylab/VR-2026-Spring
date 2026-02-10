@@ -3,7 +3,7 @@
 */
 
 export const init = async model => {
-
+   
    // CREATE NODES WITH NO SHAPES AS JOINTS FOR ANIMATION.
 
    let shoulder = model.add();

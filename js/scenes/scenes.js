@@ -28,18 +28,21 @@ export default () => {
          { name: "master1"      , path: "./master1.js"      , public: true },
          { name: "bouncing"     , path: "./bouncing.js"     , public: true },
          { name: "parse1"       , path: "./parse1.js"       , public: true },
-
          { name: "beam"         , path: "./beam.js"         , public: true },
          { name: "headGaze"     , path: "./headGaze.js"     , public: true },
          { name: "reading"      , path: "./reading.js"      , public: true },
          { name: "parse2"       , path: "./parse2.js"       , public: true },
-
          { name: "aiHelper"     , path: "./aiQuery.js"      , public: true },
          { name: "parse3"       , path: "./parse3.js"       , public: true },
          { name: "arrange"      , path: "./arrange.js"      , public: true },
          { name: "arrange2"     , path: "./arrange2.js"     , public: true },
          { name: "widgets"      , path: "./widgets.js"      , public: true },
          { name: "transfer"     , path: "./transfer.js"     , public: true },
+         { name: "car"         , path: "./car.js" , public: true },
+         { name: "carDrive"     , path: "./carDrive.js" , public: true },
+         { name: "campFire"     , path: "./campFire.js" , public: true },
+         { name: "classUse1"     , path: "./classUse1.js" , public: true },
+         { name: "classUse2"     , path: "./classUse2.js" , public: true }
       ]
    };
 }
