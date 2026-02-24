@@ -10,4 +10,3 @@ export const init = async model => {
       model.add(myText).move(-.1,1.45,0).color(1,1,1).scale(.1);
    });
 }
-
