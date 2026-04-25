@@ -7,32 +7,32 @@ Software for CSCI-GA.3033-​097 Virtual Reality 2026 Spring.
 ## Assignments Demo Videos
 
 * **Assignment 1: Car** 
-  * **Video Demo:** [Assignment 1 Demo](./media/videos/hw1_car.mp4)
+  * **Video Demo:** [Assignment 1 Demo](https://drive.google.com/file/d/1Gta9nbOM10y1SD-sA6ITCxklQPSvHXZj/view?usp=drive_link)
   * **Code:** `js/scenes/car.js`
 
 * **Assignment 2: Car Drive**
-  * **Video Demo:** [Assignment 2 Demo](./media/videos/hw2_cardrive.mp4)
+  * **Video Demo:** [Assignment 2 Demo](https://drive.google.com/file/d/1PRdBgv2hsOrSPU_klBabnfIkiDOFTRDW/view?usp=drive_link)
   * **Code:** `js/scenes/carDrive.js`
 
 
 * **Assignment 3: Campfire** 
-  * **Video Demo:** [Assignment 3 Demo](./media/videos/hw3_campfire.mp4)
+  * **Video Demo:** [Assignment 3 Demo](https://drive.google.com/file/d/1zaMHrFpwI21bqsKqNw5JxlqIVy6axHd6/view?usp=drive_link)
   * **Code:** `js/scenes/campFire.js`
 
 * **Assignment 4: Text Party**
-  * **Video Demo:** [Assignment 4 Demo](./media/videos/hw4_textparty.mp4)
+  * **Video Demo:** [Assignment 4 Demo](https://drive.google.com/file/d/1th_Ud-LDqwSxh8X0xEZjG6v583vUt9uo/view?usp=drive_link)
   * **Code:** `js/scenes/textHW.js`
 
 * **Assignment 5: Spirit Exercise**
-  * **Video Demo:** [Assignment 5 Demo](./media/videos/hw5_spirit.mp4)
+  * **Video Demo:** [Assignment 5 Demo](https://drive.google.com/file/d/1I7-1yRY8cPxwxCbqNgO94Vv5jAc6i_o-/view?usp=drive_link)
   * **Code:** `js/scenes/spirit_exercise.js`
 
 * **Assignment 6: Headgaze Exercise**
-  * **Video Demo:** [Assignment 6 Demo](./media/videos/hw6_headgaze.mp4)
+  * **Video Demo:** [Assignment 6 Demo](https://drive.google.com/file/d/1wHeAjisn9--nFuDG4DWscihcDw95RE81/view?usp=drive_link)
   * **Code:** `js/scenes/headGazeExercise.js`
     
 * **Extra Exercise: Master**
-  * **Video Demo:** [Master Exercise Demo](./media/videos/orbit.mp4)
+  * **Video Demo:** [Master Exercise Demo](https://drive.google.com/file/d/1FbCLOqYvVAQyVaVW9qjcx53Iw2fukeES/view?usp=drive_link)
   * **Code:** `js/scenes/master2.js`
 
 * **Final Project**
