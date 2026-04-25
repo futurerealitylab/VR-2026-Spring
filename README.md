@@ -30,6 +30,10 @@ Software for CSCI-GA.3033-​097 Virtual Reality 2026 Spring.
 * **Assignment 6: Headgaze Exercise**
   * **Video Demo:** [Assignment 6 Demo](./media/videos/hw6_headgaze.mp4)
   * **Code:** `js/scenes/headGazeExercise.js`
+    
+* **Extra Exercise: Master**
+  * **Video Demo:** [Master Exercise Demo](./media/videos/orbit.mp4)
+  * **Code:** `js/scenes/master2.js`
 
 * **Final Project**
   * **Video Demo:** [Final Project Demo](./media/videos/final_demo.mp4)
