@@ -13,7 +13,6 @@ const heights = [1.15, 1.5, 1.85];
 const leftColor = [0.22, 0.9, 1.0];
 const rightColor = [1.0, 0.35, 0.25];
 const neutralColor = [0.95, 0.9, 0.35];
-const pulseColor = [0.2, 0.9, 0.5];
 
 let soundBuffer = [], loadSounds = [];
 for (let i = 0; i < 6; i++)
@@ -37,13 +36,10 @@ const targetColor = hand => hand == "left" ? leftColor : hand == "right" ? right
 const choosePattern = beat => {
    const phase = beat % 16;
 
-   if (phase == 12 || phase == 13 || phase == 14)
-      return { step: 0.23, count: 1, speed: 3.4, mode: "burst" };
-
    if (phase >= 8)
-      return { step: 0.36, count: 1, speed: 3.0, mode: "cross" };
+      return { step: 0.9, count: 1, speed: 1.9, mode: "cross" };
 
-   return { step: 0.42, count: 1, speed: 2.7, mode: "flow" };
+   return { step: 1.0, count: 1, speed: 1.7, mode: "flow" };
 };
 
 export const init = async model => {
@@ -54,7 +50,6 @@ export const init = async model => {
    let score = 0;
    let hits = 0;
    let misses = 0;
-   let coachPulse = 0;
 
    let targets = [];
    let trails = [];
@@ -71,13 +66,11 @@ export const init = async model => {
 
    const leftGuide = model.add("ringZ");
    const rightGuide = model.add("ringZ");
-   const pulseRing = model.add("ringY");
 
    const horizon = model.add("square");
    const floor = model.add("square");
    const leftPeak = model.add("coneY");
    const rightPeak = model.add("coneY");
-   const moon = model.add("sphere");
 
    let addTrail = (pos, color) => {
       trails.unshift({ pos: [...pos], life: 1, color: [...color] });
@@ -85,6 +78,13 @@ export const init = async model => {
    };
 
    let spawnTarget = (spawnAt, patternMode, speed) => {
+      let activeCount = 0;
+      for (let i = 0; i < TARGET_COUNT; i++)
+         if (targets[i].active)
+            activeCount++;
+      if (activeCount >= 2)
+         return;
+
       for (let i = 0; i < TARGET_COUNT; i++) {
          if (targets[i].active)
             continue;
@@ -137,7 +137,6 @@ export const init = async model => {
 
          nextSpawnTime += beatDuration;
          beat++;
-         coachPulse = 1;
       }
 
       const leftHand = clientState.finger(clientID, "left", 1);
@@ -148,7 +147,6 @@ export const init = async model => {
       if (Array.isArray(rightHand))
          addTrail(rightHand, rightColor);
 
-      coachPulse *= 0.93;
 
       for (let i = 0; i < TARGET_COUNT; i++) {
          const targetNode = model.child(i);
@@ -178,7 +176,6 @@ export const init = async model => {
             hits++;
             score += 10 + combo;
             bestCombo = Math.max(bestCombo, combo);
-            coachPulse = 1;
             playHit(i);
             continue;
          }
@@ -220,22 +217,17 @@ export const init = async model => {
       leftGuide.identity().move(leftGuidePos).scale(0.1 + 0.03 * Math.sin(9 * t)).color(...leftColor);
       rightGuide.identity().move(rightGuidePos).scale(0.1 + 0.03 * Math.sin(9 * t + 1)).color(...rightColor);
 
-      pulseRing.identity().move(0, 1.5, STRIKE_Z - 0.02)
-         .turnY(2 * t)
-         .scale(1.0 + 0.45 * coachPulse)
-         .color(pulseColor[0], pulseColor[1], pulseColor[2]);
 
       horizon.identity().move(0, 2.0, -7.5).scale(9.5, 4.8, 1).color(0.06, 0.1, 0.2);
       floor.identity().move(0, 0.72, -2.8).turnX(-Math.PI / 2).scale(3.2, 3.2, 1).color(0.04, 0.06, 0.12);
       leftPeak.identity().move(-4.8, 0.8, -8.0).scale(1.8, 3.2, 1.8).color(0.08, 0.14, 0.2);
       rightPeak.identity().move(4.8, 0.82, -8.1).scale(2.1, 3.4, 2.1).color(0.09, 0.12, 0.22);
-      moon.identity().move(2.4, 3.1, -7.0).scale(0.32).color(0.85, 0.95, 1.0);
 
       const total = hits + misses;
       const accuracy = total > 0 ? Math.floor(100 * hits / total) : 100;
 
-      while (model.nChildren() > TARGET_COUNT + TRAIL_COUNT + 8)
-         model.remove(TARGET_COUNT + TRAIL_COUNT + 8);
+      while (model.nChildren() > TARGET_COUNT + TRAIL_COUNT + 6)
+         model.remove(TARGET_COUNT + TRAIL_COUNT + 6);
 
       model.add(clay.text("RHYTHM CARDIO")).move(-1.05, 2.52, -1.85).scale(1.95).color(0.9, 1.0, 1.0);
       model.add(clay.text("SCORE " + score)).move(-1.05, 2.30, -1.85).scale(1.2).color(0.85, 0.95, 1.0);

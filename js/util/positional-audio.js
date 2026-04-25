@@ -46,17 +46,24 @@ export async function loadSound(url, bufferSetter) {
 }
 
 
-export function playSoundAtPosition(buffer, position) {
+export function playSoundAtPosition(buffer, position, volume = 1.0) {
     audioContext.resume();
     const source = audioContext.createBufferSource();
     source.buffer = buffer;
+    
+    // --- 新增：创建一个音量控制节点 (GainNode) ---
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = volume; // 根据传入的参数设置音量大小
+
     resonanceSource.setPosition(position[0], position[1], position[2]);
-    source.connect(resonanceSource.input);
+    
+    // --- 修改连接顺序：音源 -> 音量节点 -> 空间音效节点 ---
+    source.connect(gainNode);
+    gainNode.connect(resonanceSource.input);
+    
     source.start(0);
-    console.log('Sound Played');
-
+    console.log(`Sound Played with volume: ${volume}`);
 }
-
 // play looping sounds
 
 let ongoingSource;
