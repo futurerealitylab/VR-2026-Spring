@@ -2,6 +2,40 @@
 
 Software for CSCI-GA.3033-​097 Virtual Reality 2026 Spring.
 
+---
+
+## Assignments Demo Videos
+
+* **Assignment 1: Car** 
+  * **Video Demo:** [Assignment 1 Demo](./media/videos/hw1_car.mp4)
+  * **Code:** `js/scenes/car.js`
+
+* **Assignment 2: Car Drive**
+  * **Video Demo:** [Assignment 2 Demo](./media/videos/hw2_cardrive.mp4)
+  * **Code:** `js/scenes/carDrive.js`
+
+
+* **Assignment 3: Campfire** 
+  * **Video Demo:** [Assignment 3 Demo](./media/videos/hw3_campfire.mp4)
+  * **Code:** `js/scenes/campFire.js`
+
+* **Assignment 4: Text Party**
+  * **Video Demo:** [Assignment 4 Demo](./media/videos/hw4_textparty.mp4)
+  * **Code:** `js/scenes/textHW.js`
+
+* **Assignment 5: Spirit Exercise**
+  * **Video Demo:** [Assignment 5 Demo](./media/videos/hw5_spirit.mp4)
+  * **Code:** `js/scenes/spirit_exercise.js`
+
+* **Assignment 6: Headgaze Exercise**
+  * **Video Demo:** [Assignment 6 Demo](./media/videos/hw6_headgaze.mp4)
+  * **Code:** `js/scenes/headGazeExercise.js`
+
+* **Final Project**
+  * **Video Demo:** [Final Project Demo](./media/videos/final_demo.mp4)
+  * **Code:** `js/scenes/final_project.js`
+
+---
 # How to setup the environment
 
 install Node.js and npm if you haven't. This project was tested using **Node v18.20.8**; if you run into issues, we recommend switching to this version.
