@@ -4,6 +4,15 @@ Software for CSCI-GA.3033-​097 Virtual Reality 2026 Spring.
 
 ---
 
+## Final Project: ONE MATCH
+
+* **Video Demo:** [Demo](https://drive.google.com/file/d/1hcZmToe40c4seTaOOcKJAmMABfISPNRJ/view?usp=drive_link)
+* **Code:** 
+  * `js/scenes/final_project.js`
+  * `js/scenes/micro_world.js`
+
+---
+
 ## Assignments Demo Videos
 
 * **Assignment 1: Car** 
