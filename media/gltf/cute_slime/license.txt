@@ -1,0 +1,11 @@
+Model Information:
+* title:	Cute Slime
+* source:	https://sketchfab.com/3d-models/cute-slime-cf04b5e4d11f4fcba581dbda21134896
+* author:	hugannh3 (https://sketchfab.com/hugannh3)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Cute Slime" (https://sketchfab.com/3d-models/cute-slime-cf04b5e4d11f4fcba581dbda21134896) by hugannh3 (https://sketchfab.com/hugannh3) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

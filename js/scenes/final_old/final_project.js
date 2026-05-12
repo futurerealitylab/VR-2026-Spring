@@ -1,13 +1,12 @@
-import * as cg from "../render/core/cg.js";
-import { loadSound, playSoundAtPosition } from "../util/positional-audio.js";
-import { loadStereoSound, playStereoAudio, stopStereoLoopingAudio } from "../util/stereo-audio.js";
+import * as cg from "../../render/core/cg.js";
+import { loadSound, playSoundAtPosition } from "../../util/positional-audio.js";
+import { loadStereoSound, playStereoAudio, stopStereoLoopingAudio } from "../../util/stereo-audio.js";
 import * as act2 from "./micro_world.js";
-import * as global from "../global.js";
-import { Gltf2Node } from "../render/nodes/gltf2.js";
-import { ControllerBeam } from "../render/core/controllerInput.js";
+import * as global from "../../global.js";
+import { Gltf2Node } from "../../render/nodes/gltf2.js";
+import { ControllerBeam } from "../../render/core/controllerInput.js";
 
 // ─── 游戏阶段 ───────────────────────────────────────────
-// "INTRO"            → 故事序章，逐行展示文字后自动切换
 // "DARK"             → 全黑，等待玩家找到火柴
 // "MATCH_HELD"       → 火柴在手，等待划火柴手势
 // "LIGHTING"         → 点火成功，灯慢慢变亮
@@ -21,7 +20,7 @@ import { ControllerBeam } from "../render/core/controllerInput.js";
 // ─── FIX #1: 用 window.sharedState 暴露 gamePhase ───────
 // micro_world.js 需要能把游戏推进到 SCENE_3，
 // 所以我们把 gamePhase 放进一个全局共享对象，而不是用 let。
-window.sharedState = { gamePhase: "INTRO" };
+window.sharedState = { gamePhase: "DARK" };
 
 // 方便读写的本地别名（每次读/写都通过 window.sharedState.gamePhase）
 const getPhase = () => window.sharedState.gamePhase;
@@ -32,6 +31,7 @@ let choiceMade = null;      // "FOLLOW" 或 "STAY"
 let stayTimer = 10;         // 如果不跟，10秒后灯灭
 
 export const init = async model => {
+
    // right controller 
    window.beamR = new ControllerBeam(model, 'right');
    window.rightClick = false;
@@ -68,26 +68,12 @@ export const init = async model => {
    const BASE_NODES = 12;
 
    // ─── 状态变量 ────────────────────────────────────────
-   // Add these with your other state variables
-   let monsterLine1Buffer = null;
-   let monsterLine2Buffer, monsterLine3Buffer;
-   let playedLine1 = false, playedLine2 = false, playedLine3 = false;
    let igniteBuffer = null;
    await loadSound("media/sound/ignite.mp3", buffer => igniteBuffer = buffer);
-   let scratchBuffer = null;
-   await loadSound("media/sound/scratch.mp3", buffer => scratchBuffer = buffer);
    let bgmBuffer = null;
    await loadStereoSound("media/sound/bgm01.mp3", buffer => bgmBuffer = buffer);
    if (bgmBuffer)
       playStereoAudio(bgmBuffer);
-
-   await loadSound("media/sound/monster_line1.mp3", buffer => {
-      console.log("Monster sound 01 loaded!"); // Add this to check console
-      monsterLine1Buffer = buffer;
-   });
-   await loadSound("media/sound/monster_line2.mp3", b => monsterLine2Buffer = b);
-   await loadSound("media/sound/monster_line3.mp3", b => monsterLine3Buffer = b);
-
 
    let lightLevel   = 0.0;   // 0 = 全黑，1.0 = 全亮
    const ROOM_Y_OFFSET = -0.05;  // 整个房间下移
@@ -101,12 +87,11 @@ export const init = async model => {
    let matchBoxHeldBy = null;
    let matchDir      = [1, 0, 0];
    let flameLife     = 0.0;
-   let lastScratchTime  = 0;
    let noteRead      = false;
 
    const holePos        = [-0.8, 0.76 + ROOM_Y_OFFSET, -1.49 + ROOM_Z_OFFSET];
    const underTablePos  = [0.2,  0.3  + ROOM_Y_OFFSET, -0.6  + ROOM_Z_OFFSET];
-   let monsterPos       = [holePos[0], holePos[1], holePos[2] + 0.1];
+   let monsterPos       = [...underTablePos];
    let monsterState     = "HIDDEN";
    let monsterSnatchTimer = 0.0;
 
@@ -114,22 +99,6 @@ export const init = async model => {
    let prevHandX    = null;
    let swipeSpeed   = 0.0;
    const SWIPE_THRESHOLD = 1.8;
-
-   // ─── INTRO 专用变量 ──────────────────────────────────
-   // 序章由一系列时间戳驱动的文字卡片组成，最后一张卡片显示后
-   // 玩家捏合（pinch）或等待超时即可跳入真正的游戏。
-   let introStartTime = null;   // 第一帧时初始化为 t
-   let introDone      = false;  // 序章是否已结束
-   const INTRO_SKIP_PINCH = true; // 允许 pinch 跳过序章
-
-   const INTRO_CARDS = [
-      [0.0,  "A MATCH FACTORY. END OF THE NIGHT SHIFT.", [0.55, 0.50, 0.45], 2.0],
-      [4.0,  "ONE LAST TASK: TEST THE NEW BATCH.",       [0.45, 0.40, 0.38], 2.0],
-      [8.0,  "STRIKE A MATCH. MAKE SURE THEY WORK.",      [0.70, 0.65, 0.55], 2.0],
-      [12.0, "THEN YOU CAN GO HOME.",                     [0.90, 0.80, 0.50], 2.0],
-      [16.0, "[ PINCH TO BEGIN  —  or wait ]",            [0.35, 0.35, 0.40], 2.0],
-   ];
-   const INTRO_AUTO_END = 40.0;  // 没有 pinch 时，(40-16)s 后自动进入游戏
 
    // ─── 数据记录 ────────────────────────────────────────
    const eventLog = [];
@@ -164,10 +133,6 @@ export const init = async model => {
       // 每帧从共享对象读取阶段，方便统一判断
       const gamePhase = getPhase();
 
-      // Global scene nodes are not affected by clearing/hiding `model`
-      // children, so we explicitly hide the chandelier during the intro.
-      lampNode.scale = gamePhase === "INTRO" ? [0, 0, 0] : [0.04, 0.04, 0.04];
-
       const leftHand     = clientState.finger(clientID, "left",  1);
       const rightHand    = clientState.finger(clientID, "right", 1);
       const leftHandMat  = clientState.hand(clientID, "left");
@@ -179,59 +144,6 @@ export const init = async model => {
          { pos: leftHand,  side: "left",  pinch: pinchLeft  },
          { pos: rightHand, side: "right", pinch: pinchRight },
       ];
-
-      // ══════════════════════════════════════════════════
-      // 阶段零：INTRO — 故事序章
-      // ══════════════════════════════════════════════════
-      if (gamePhase === "INTRO") {
-         // Hide all base nodes so they don't block the view
-         for (let i = 0; i < BASE_NODES; i++) {
-            model.child(i).identity().scale(0);
-         }
-
-         // 首帧时记录序章开始时间
-         if (introStartTime === null) introStartTime = t;
-         const introElapsed = t - introStartTime;
-
-         // 全黑遮罩背景
-         model.add("cube")
-              .move(0, ROOM_Y_OFFSET, ROOM_Z_OFFSET)
-              .scale(-100)
-              .color(0, 0, 0);
-
-         // 逐卡渲染：只显示已到时间的卡片，并为最新一张做淡入
-         for (let i = 0; i < INTRO_CARDS.length; i++) {
-            const [startAt, text, _col, sizeScale] = INTRO_CARDS[i];
-            if (introElapsed < startAt) break;      // 还没到时间
-
-            // 淡入：前 0.8s 内从 0 升到 1
-            const age   = introElapsed - startAt;
-            const alpha = Math.min(age / 0.8, 1.0);
-
-            // 纵向堆叠：最新一张在顶部附近，旧的往下偏移
-            const stackOffset = (INTRO_CARDS.length - 1 - i) * 0.14;
-            const yPos = 1.55 + ROOM_Y_OFFSET - stackOffset;
-
-            model.add(clay.text(text))
-            .move(-0.55, yPos, -1.8 + ROOM_Z_OFFSET)
-            .scale(sizeScale * 1.2)
-            .color(1, 1, 1, alpha);
-         }
-
-         // Pinch 跳过 或 自动结束
-         let anyPinch = false;
-         if (INTRO_SKIP_PINCH && introElapsed > 3.0) {
-            for (const { pinch } of hands) { if (pinch) { anyPinch = true; break; } }
-         }
-
-         if (anyPinch || introElapsed >= INTRO_AUTO_END) {
-            introDone = true;
-            setPhase("DARK");
-         }
-
-         // 序章阶段直接 return，不渲染房间
-         return;
-      }
 
       // ══════════════════════════════════════════════════
       // 阶段八：ACT2 — 完全交给 micro_world 处理
@@ -351,11 +263,6 @@ export const init = async model => {
                if (igniteBuffer) {
                   playSoundAtPosition(igniteBuffer, matchPos, 3.0);
                   setTimeout(() => playSoundAtPosition(igniteBuffer, matchPos), 30);
-               }
-            } else if (swipeSpeed > 0.3 && nearBox && scratchBuffer) {
-               if (t - lastScratchTime > 0.3) {
-                  playSoundAtPosition(scratchBuffer, matchPos, 3.0);
-                  lastScratchTime = t;
                }
             }
          }
@@ -647,7 +554,7 @@ export const init = async model => {
          } 
          else if (monsterState === "JUMP_TO_TABLE") {
             const targetPos = [matchBoxPos[0] + 0.15, matchBoxPos[1], matchBoxPos[2]];
-            const speed = 1.0;
+            const speed = 2.0;
             const dx = targetPos[0] - monsterPos[0];
             const dy = targetPos[1] - monsterPos[1];
             const dz = targetPos[2] - monsterPos[2];
@@ -663,36 +570,12 @@ export const init = async model => {
          } 
          else if (monsterState === "TAUNTING") {
             monsterSnatchTimer += dt;
-            if (monsterSnatchTimer < 3.0) {
-               if (!playedLine1 && monsterLine1Buffer) {
-                  playSoundAtPosition(monsterLine1Buffer, monsterPos, 2.0); // 2.0 is volume
-                  playedLine1 = true;
-               }
-               model.add(clay.text("I WATCHED THIS FACTORY FOR WEEKS."))
-                  .move(monsterPos[0] - 0.2, monsterPos[1] + 0.25, monsterPos[2]-0.5)
-                  .scale(1.5).color(1, 1, 1);
-            } else if (monsterSnatchTimer < 6.0) {
-               if (!playedLine2 && monsterLine2Buffer) {
-                  playSoundAtPosition(monsterLine2Buffer, monsterPos, 2.0);
-                  playedLine2 = true;
-               }
-               model.add(clay.text("YOUR MATCHES ARE THE ONLY WARMTH LEFT."))
-                  .move(monsterPos[0] - 0.25, monsterPos[1] + 0.25, monsterPos[2]-0.5)
-                  .scale(1.5).color(1, 1, 1);
-            } else if (monsterSnatchTimer < 9.0) {
-               if (!playedLine3 && monsterLine3Buffer) {
-                  playSoundAtPosition(monsterLine3Buffer, monsterPos, 2.0);
-                  playedLine3 = true;
-               }
-               model.add(clay.text("PLEASE. FOLLOW ME. HELP ME."))
-                  .move(monsterPos[0] - 0.12, monsterPos[1] + 0.25, monsterPos[2]-0.5)
-                  .scale(1.5).color(1, 1, 1);
-            } else {
+            if (monsterSnatchTimer > 1.5) {
                monsterState = "SNATCHING";
             }
          }
          else if (monsterState === "SNATCHING") {
-            const speed = 1.5; 
+            const speed = 2.0; 
             const dx = matchBoxPos[0] - monsterPos[0];
             const dy = matchBoxPos[1] - monsterPos[1];
             const dz = matchBoxPos[2] - monsterPos[2];
@@ -760,8 +643,8 @@ export const init = async model => {
          const stayBtnPos   = [uiPos[0] + 0.15, uiPos[1] - 0.04, uiPos[2]];
 
          // 定位可交互按钮方块（供 hitRect 检测用）
-         window.followBtn.identity().move(...followBtnPos).scale(0.11, 0.03, 0.01);
-         window.stayBtn.identity().move(...stayBtnPos).scale(0.11, 0.03, 0.01);
+         window.followBtn.identity().move(...followBtnPos).scale(0.06, 0.03, 0.01);
+         window.stayBtn.identity().move(...stayBtnPos).scale(0.06, 0.03, 0.01);
 
          window.beamR.update();
 
@@ -814,23 +697,18 @@ export const init = async model => {
          // 文字标签对齐按钮坐标
          model.add("cube")
               .move(uiPos[0], uiPos[1], uiPos[2] - 0.01)
-              .scale(0.45, 0.15, 0.005)
+              .scale(0.38, 0.15, 0.005)
               .color(1, 1, 1, 0.1);
 
-         model.add(clay.text("It came here on purpose."))
-            .move(titlePos[0]-0.1, titlePos[1] + 0.03, titlePos[2]).scale(1.2).color(0, 0, 0);
+         model.add(clay.text("Follow the little thief?"))
+              .move(...titlePos).scale(0.7).color(0, 0, 0);
 
-         model.add(clay.text("It needs you."))
-            .move(titlePos[0]-0.1, titlePos[1] , titlePos[2]).scale(1.2).color(0, 0, 0);
-
-         model.add(clay.text("[ FOLLOW ]"))
-              .move(followBtnPos[0] - 0.05, followBtnPos[1], followBtnPos[2])
-              .scale(0.8)
+         model.add(clay.text("[ YES ]"))
+              .move(...followBtnPos).scale(0.5)
               .color(isPointingFollow || isNearFollow ? [0, 0.6, 0] : [0.3, 0.3, 0.3]);
 
-         model.add(clay.text("[ FINISH YOUR SHIFT ]"))
-              .move(stayBtnPos[0] - 0.1, stayBtnPos[1], stayBtnPos[2])
-              .scale(0.8)
+         model.add(clay.text("[ NO ]"))
+              .move(...stayBtnPos).scale(0.5)
               .color(isPointingStay || isNearStay ? [0.8, 0, 0] : [0.3, 0.3, 0.3]);
 
       } else {
@@ -859,15 +737,15 @@ export const init = async model => {
          // 屏幕中央文字
          const alpha = Math.min(fadeProgress * 2, 1.0);
          if (alpha > 0.1) {
-            model.add(clay.text("You finished your shift."))
+            model.add(clay.text("You chose to stay."))
                  .move(-0.25, 1.5, -0.8)
-                 .scale(1.5)
+                 .scale(1.2)
                  .color(alpha * 0.8, alpha * 0.7, alpha * 0.6);
 
             if (fadeProgress > 0.6) {
-               model.add(clay.text("Somewhere, a world stays frozen."))
+               model.add(clay.text("The light fades."))
                     .move(-0.18, 1.35, -0.8)
-                    .scale(1.5)
+                    .scale(1.0)
                     .color(alpha * 0.5, alpha * 0.4, alpha * 0.4);
             }
          }
@@ -911,8 +789,8 @@ export const init = async model => {
 
          let shake = (Math.random() - 0.5) * 0.02 * progress;
          model.add(clay.text("ACT II : THE MICRO-WORLD"))
-              .move(shake-0.5, 1.5 + shake, -0.8)
-              .scale(2.5 + progress * 0.1)
+              .move(shake, 1.5 + shake, -0.8)
+              .scale(1.5 + progress * 0.05)
               .color(0, 0, 0);
 
          if (pTime > duration) {
@@ -951,11 +829,11 @@ export const init = async model => {
       if (l > 0.5 && !noteRead) {
          for (const { pos: hPos } of hands) {
             if (!Array.isArray(hPos)) continue;
-            //if (cg.distance(hPos, notePos) < GRAB_RADIUS) {
-            noteRead = true;
-            logEvent("note_read", null, notePos);
-            break;
-            //}
+            if (cg.distance(hPos, notePos) < GRAB_RADIUS) {
+               noteRead = true;
+               logEvent("note_read", null, notePos);
+               break;
+            }
          }
       }
 
@@ -985,13 +863,12 @@ export const init = async model => {
 
       // Hint 文字
       const hint =
-         gamePhase === "INTRO"            ? ""                              :
          gamePhase === "DARK"             ? "FIND SOMETHING IN THE DARK..." :
-         gamePhase === "MATCH_HELD"       ? "STRIKE THE MATCH. SWIPE FAST" :
+         gamePhase === "MATCH_HELD"       ? "STRIKE THE MATCH — SWIPE FAST" :
          gamePhase === "LIGHTING"         ? "..."                           :
          gamePhase === "LIT"              ? (noteRead ? "WHO WROTE THIS...?" : "ACT I COMPLETE") :
-         gamePhase === "MONSTER_EVENT"    ? "TALK TO THE LITTLE THIEF"             :
-         gamePhase === "QUEST_HUB"        ? "MAKE A CHOICE"                        :
+         gamePhase === "MONSTER_EVENT"    ? "HEY! MY MATCHBOX!"             :
+         gamePhase === "QUEST_HUB"        ? "TALK TO THE LITTLE THIEF..."   :
          gamePhase === "GAME_OVER_STAY"   ? ""                              : "";
 
       const hintColor =
@@ -1002,13 +879,13 @@ export const init = async model => {
 
       if (hint) {
          model.add(clay.text(hint))
-              .move(-0.8, 2 + ROOM_Y_OFFSET, -1.8 + ROOM_Z_OFFSET).scale(2.0)
+              .move(-0.8, 2 + ROOM_Y_OFFSET, -1.8 + ROOM_Z_OFFSET).scale(1.2)
               .color(...hintColor);
       }
 
-      // model.add(clay.text("EVENTS: " + eventLog.length))
-      //      .move(-0.8, 1.8 + ROOM_Y_OFFSET, -1.8 + ROOM_Z_OFFSET).scale(1.0)
-      //      .color(0.5, 0.5, 0.7);
+      model.add(clay.text("EVENTS: " + eventLog.length))
+           .move(-0.8, 1.8 + ROOM_Y_OFFSET, -1.8 + ROOM_Z_OFFSET).scale(0.85)
+           .color(0.5, 0.5, 0.7);
 
       if (l > 0.2) {
          model.add(clay.text("You are not alone."))
@@ -1018,7 +895,7 @@ export const init = async model => {
               .color(0.08 * l, 0.06 * l, 0.04 * l);
 
          if (noteRead) {
-            model.add(clay.text(""))
+            model.add(clay.text("CHECK UNDER THE TABLE."))
                  .move(notePos[0] - 0.03, notePos[1] + 0.001, notePos[2] + 0.02)
                  .turnX(-Math.PI / 2).scale(0.4)
                  .color(0.6 * l, 0.3 * l, 0.1 * l);
