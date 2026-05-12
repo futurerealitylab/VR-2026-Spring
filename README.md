@@ -7,6 +7,7 @@ Software for CSCI-GA.3033-​097 Virtual Reality 2026 Spring.
 ## Final Project: ONE MATCH
 
 * **Video Demo:** [Demo](https://drive.google.com/file/d/1hcZmToe40c4seTaOOcKJAmMABfISPNRJ/view?usp=drive_link)
+* **Deck:** [Deck](https://docs.google.com/presentation/d/1cGTfUzx4aNKozdeDvtu0bSSdu9AfzkixCbP0M-sCCFM/edit?usp=sharing)
 * **Code:** 
   * `js/scenes/final_project.js`
   * `js/scenes/micro_world.js`
