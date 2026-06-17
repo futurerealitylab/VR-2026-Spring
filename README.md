@@ -2,6 +2,54 @@
 
 Software for CSCI-GA.3033-​097 Virtual Reality 2026 Spring.
 
+---
+
+## Final Project: ONE MATCH
+
+* **Video Demo:** [Demo](https://drive.google.com/file/d/1hcZmToe40c4seTaOOcKJAmMABfISPNRJ/view?usp=drive_link)
+* **Deck:** [Deck](https://docs.google.com/presentation/d/1cGTfUzx4aNKozdeDvtu0bSSdu9AfzkixCbP0M-sCCFM/edit?usp=sharing)
+* **Code:** 
+  * `js/scenes/final_project.js`
+  * `js/scenes/micro_world.js`
+
+---
+
+## Assignments Demo Videos
+
+* **Assignment 1: Car** 
+  * **Video Demo:** [Assignment 1 Demo](https://drive.google.com/file/d/1Gta9nbOM10y1SD-sA6ITCxklQPSvHXZj/view?usp=drive_link)
+  * **Code:** `js/scenes/car.js`
+
+* **Assignment 2: Car Drive**
+  * **Video Demo:** [Assignment 2 Demo](https://drive.google.com/file/d/1PRdBgv2hsOrSPU_klBabnfIkiDOFTRDW/view?usp=drive_link)
+  * **Code:** `js/scenes/carDrive.js`
+
+
+* **Assignment 3: Campfire** 
+  * **Video Demo:** [Assignment 3 Demo](https://drive.google.com/file/d/1zaMHrFpwI21bqsKqNw5JxlqIVy6axHd6/view?usp=drive_link)
+  * **Code:** `js/scenes/campFire.js`
+
+* **Assignment 4: Text Party**
+  * **Video Demo:** [Assignment 4 Demo](https://drive.google.com/file/d/1th_Ud-LDqwSxh8X0xEZjG6v583vUt9uo/view?usp=drive_link)
+  * **Code:** `js/scenes/textHW.js`
+
+* **Assignment 5: Spirit Exercise**
+  * **Video Demo:** [Assignment 5 Demo](https://drive.google.com/file/d/1I7-1yRY8cPxwxCbqNgO94Vv5jAc6i_o-/view?usp=drive_link)
+  * **Code:** `js/scenes/spirit_exercise.js`
+
+* **Assignment 6: Headgaze Exercise**
+  * **Video Demo:** [Assignment 6 Demo](https://drive.google.com/file/d/1wHeAjisn9--nFuDG4DWscihcDw95RE81/view?usp=drive_link)
+  * **Code:** `js/scenes/headGazeExercise.js`
+    
+* **Extra Exercise: Master**
+  * **Video Demo:** [Master Exercise Demo](https://drive.google.com/file/d/1FbCLOqYvVAQyVaVW9qjcx53Iw2fukeES/view?usp=drive_link)
+  * **Code:** `js/scenes/master2.js`
+
+* **Final Project**
+  * **Video Demo:** [Final Project Demo](./media/videos/final_demo.mp4)
+  * **Code:** `js/scenes/final_project.js`
+
+---
 # How to setup the environment
 
 install Node.js and npm if you haven't. This project was tested using **Node v18.20.8**; if you run into issues, we recommend switching to this version.

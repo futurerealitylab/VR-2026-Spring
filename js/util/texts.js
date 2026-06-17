@@ -1,4 +1,6 @@
 export let texts = [
+`Hello, world!
+`,
 `
 import * as cg from "../render/core/cg.js";
 import { G3 } from "../util/g3.js";
