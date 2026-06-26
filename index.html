@@ -48,6 +48,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
   <!-- <script src="js/third-party/plotly-latest.min.js"></script> -->
   <script src="js/buffer-browser.js"></script>
+  
+
+
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
   <!-- script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
@@ -62,6 +65,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   <header id=header>
     <details open id="header-details">
       <summary>Welcome to the FutureClassroom!!</summary>
+            <button id="connectWatchBtn" style="padding: 10px; margin-bottom: 10px; background-color: #4CAF50; color: white;">
+        Connect Bangle.js
+      </button>
       <dev id=messages>&nbsp;</dev>
         <!-- <a class="back" href="./">Back</a> -->
       <dev id=sceneButtons>&nbsp;</dev>
@@ -76,6 +82,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   </div>
 
   <script type="module" src="/js/main.js"></script>
+
+  <script type = "module">
+
+    //window.Puck = Puck;
+    
+    document.getElementById('connectWatchBtn').addEventListener('click', function() {
+      console.log("hello");
+      Puck.write('\n', function() 
+      {
+        window.isWatchConnected = true;
+        let btn = document.getElementById('connectWatchBtn');
+        btn.innerText = "Watch Connected!";
+        btn.style.backgroundColor = "gray";
+        console.log("Bangle.js connected");
+      });
+    });
+  </script>
 
 </body>
 
