@@ -28,7 +28,7 @@ export default () => {
          { name: "text8"        , path: "./text8.js"        , public: true },
          { name: "dissolve"     , path: "./dissolve.js"     , public: true },
          { name: "master1"      , path: "./master1.js"      , public: true },
-         { name: "bouncing"     , path: "./bouncing.js"     , public: true },
+         { name: "bouncing5"    , path: "./bouncing5.js"    , public: true },
          { name: "parse1"       , path: "./parse1.js"       , public: true },
 
          { name: "beam"         , path: "./beam.js"         , public: true },
@@ -42,6 +42,11 @@ export default () => {
          { name: "arrange2"     , path: "./arrange2.js"     , public: true },
          { name: "widgets"      , path: "./widgets.js"      , public: true },
          { name: "transfer"     , path: "./transfer.js"     , public: true },
+         { name: "watchTest2"   , path: "./watchTest2.js"   , public: true },
+         { name: "watchTest3"   , path: "./watchTest3.js"   , public: true },
+         { name: "rayTracedCubes",path: "./rayTracedCubes.js",public: true },
+         { name: "rtc"          , path: "./rtc.js"          , public: true },
+         { name: "hud"          , path: "./hud.js"          , public: true },
          { name: "transferBiciWidgets" , path: "./transferBiciWidgets.js" , public: true },
       ]
    };
