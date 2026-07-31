@@ -1,8 +1,8 @@
 import * as cg from "./cg.js";
-import { EyeScreens } from "./eyeScreensA.js";
+import { EyeScreens } from "./eyeScreens.js";
 
 export function RTC(model, matrices, colors) {
-   let eyeScreens = new EyeScreens(model);
+   let eyeScreens = new EyeScreens(model, .7);
    eyeScreens.root().flag('uRTC');
    let N = matrices.length;
 
@@ -11,8 +11,8 @@ export function RTC(model, matrices, colors) {
       uniform vec3 uCol[`+N+`];
       uniform vec4 uA[`+N+`],uB[`+N+`],uC[`+N+`],uD[`+N+`],uE[`+N+`],uF[`+N+`];
 
-      float fovX = tan(59./2. * 3.14159 / 180.);
-      float fovY = tan(37./2. * 3.14159 / 180.);
+      float fovX = .1 * tan(59./2. * 3.14159 / 180.);
+      float fovY = .1 * tan(37./2. * 3.14159 / 180.);
 
       vec3 normal;
       mat3 rayH(vec4 V, vec4 W, vec4 H, vec4 A, vec4 B, mat3 M) {
@@ -49,7 +49,7 @@ export function RTC(model, matrices, colors) {
 	    M = rayH(V, W, uF[n], uA[n], uB[n], M); if (M[0][0] > M[0][1]) continue;
 	    if (M[0][0] > 0. && M[0][0] < M[0][1] && M[0][0] < tLo) {
 	       tLo = M[0][0];
-	       opacity = .35;
+	       opacity = 1.;
 	       vec3 nor = normalize(M[1]);
 	       color = 20. * uCol[n] * (.5 + .1 * nor.x);
 	    }

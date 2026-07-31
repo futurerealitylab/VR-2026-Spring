@@ -9,17 +9,17 @@ export const init = async model => {
 
       //model.identity().move(0,1.5,0).scale(.1).turnY(-.6).turnX(.25).turnZ(-.2);
 
-      model.identity().move(0,1.5,0).scale(.1).turnY(-.1);
-
-      // HOUSE
-
-      model.add('cube').color(1,.5,.5);
-      model.add('cube').color(1,.5,.5).move(0,1,0).turnZ(Math.PI/4).scale(r2/2,r2/2,.99);
+      model.identity().move(0,.5,0).scale(.1).turnY(-.1);
 
       // ROOF
 
       model.add('cube').color(1,0,0).move(0,1+r2/2,0).turnZ( Math.PI/4).move(-.7,.25,0).scale(1,.05,1.1);
       model.add('cube').color(1,0,0).move(0,1+r2/2,0).turnZ(-Math.PI/4).move( .7,.25,0).scale(1,.05,1.1);
+
+      // HOUSE
+
+      model.add('cube').color(1,.5,.5);
+      model.add('cube').color(1,.5,.5).move(0,1,0).turnZ(Math.PI/4).scale(r2/2,r2/2,.99);
 
       let dark = [.05,.05,.05];
 
@@ -56,6 +56,6 @@ export const init = async model => {
          c.push(model.child(n)._color);
          m.push(model.child(n).getMatrix());
       }
-      new RTC(model, m, c);
+      (new RTC(model, m, c)).update();
    });
 }
